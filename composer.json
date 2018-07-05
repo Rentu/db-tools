@@ -1,0 +1,17 @@
+{
+    "name": "devilu/db_tools",
+    "description": "mysql tools",
+    "type": "library",
+    "authors": [
+        {
+            "name": "zhaolu",
+            "email": "zhaolu@bilibili.com"
+        }
+    ],
+    "require": {},
+    "autoload":{
+        "psr-4":{
+            "src\\": "src"
+        }
+    }
+}
