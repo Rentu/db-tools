@@ -16,8 +16,8 @@ namespace src;
 interface ConnectionInterface
 {
     public function connection(); // 连接
-    public function truncate($table); // 清表
-    public function getTables() : Array ; // 获取表列表
+    public function truncate($dbName, $table); // 清表
+    public function getTables($dbName); // 获取表列表
     public function setAutoIncrementAfter($table, $num); // 修改自增值
 
 }

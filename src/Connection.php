@@ -19,33 +19,50 @@ class Connection implements ConnectionInterface
         $this->connection();
     }
 
-
     public function connection(){
-        $dsn = "mysql:dbname=".self::$_config['db'].";host=".self::$_config['host'];
-        $dbh = new PDO($dsn, self::$_config["user"], self::$_config["passwd"]);
-        $this->_dbh = $dbh;
+        try{
+            $dsn = "mysql:dbname=".self::$_config['db'].";host=".self::$_config['host'];
+            $dbh = new PDO($dsn, self::$_config["user"], self::$_config["passwd"]);
+            $this->_dbh = $dbh;
+        }catch (\PDOException $e){
+            throw $e;
+        }
     }
 
     /**
      * @param $table
      * @return mixed
      */
-    public function truncate($table)
+    public function truncate($dbName, $table)
     {
-        $sql = "truncate table {$table}";
-        echo $sql."\n";
-        return $this->_dbh->exec($sql);
+        try{
+            $sql = "truncate table {$table}";
+            file_put_contents(getenv('LOG_PAth'), "数据库：{$dbName}  执行Sql: ".$sql."\n", 8);
+            return $this->_dbh->exec($sql);
+        }catch (\PDOException $e){
+            throw $e;
+        }
+
     }
 
     /**
-     * @return Array
+     * @param $dbName
+     * @return \Generator
      */
-    public function getTables() : Array
+    public function getTables($dbName)
     {
-        $sql = "show tables";
-        echo $sql."\n";
-        $query =  $this->_dbh->query($sql);
-        return $query->fetchAll(PDO::FETCH_COLUMN, 0);
+        try{
+            $sql = "show tables";
+            file_put_contents(getenv('LOG_PAth'), "数据库：{$dbName}  执行Sql: ".$sql."\n", 8);
+            $query =  $this->_dbh->query($sql);
+            $tables = $query->fetchAll(PDO::FETCH_COLUMN, 0);
+            foreach ($tables as $table){
+                yield $table;
+            }
+        }catch (\PDOException $e){
+            throw $e;
+        }
+
     }
 
     /**
@@ -56,40 +73,17 @@ class Connection implements ConnectionInterface
      */
     public function setAutoIncrementAfter($table, $num)
     {
-        $sql = "alter table {$table} auto_increment={$num}";
-        echo $sql."\n";
-        return $this->_dbh->exec($sql);
-    }
-
-    /**
-     * 修改表名
-     * @param $oldName
-     * @param $newName
-     * @return mixed
-     */
-    public function changeTableName($oldName, $newName){
-        $sql = "alter table {$oldName} rename {$newName}";
-        echo $sql."\n";
-        return $this->_dbh->exec($sql);
-    }
-
-    /**
-     * @param $table
-     * @return mixed
-     */
-    public function droptable($table){
-        $sql = "drop table $table";
-        echo $sql."\n";
-        return $this->_dbh->exec($sql);
-    }
-
-    public function dropIndex(){
+        try{
+            $sql = "alter table {$table} auto_increment={$num}";
+            echo $sql."\n";
+            return $this->_dbh->exec($sql);
+        }catch (\PDOException $e){
+            throw $e;
+        }
 
     }
 
-    public function addIndex(){
 
-    }
 
 
 
