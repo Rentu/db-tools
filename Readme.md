@@ -1,1 +1,1 @@
-you can user either php or shell
+you can use either php or shell
